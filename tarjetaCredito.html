@@ -1,0 +1,174 @@
+<html>	
+<head>
+
+</head>
+<body>
+
+	<h2>JavaScript CreditCard Identify</h2>
+
+	Put a card number: <input type="number" id="numberCard" value="00000000"><br>
+	
+	<button onclick="identifyCard()">Identify</button>
+	
+	<p id="result"></p>
+	
+<script>
+
+		/*
+			2018-04-21: missing add credit card checksum.
+		
+		*/
+		/* Resume of http://www.dirigodev.com/blog/ecommerce/anatomy-of-a-credit-card-number/
+		
+			| MII	|	Industry Assignment |
+			-------- -------------------------
+			1.2		|	Airlines (Diners Club enroute)
+			-------- -------------------------
+			3		|	Travel & Entertainment(non-banks such as 
+						as American Express, Diner's Club JCB, and Carte Blance)
+			-------- -------------------------
+			4		|	Banking $ financial (Vosa, Switch and Electron)
+			-------- -------------------------
+			5		|	Banking & Financial(MasterCard and Bankcard)
+			-------- -------------------------
+			6		|	Merchandising & Finance(Discover Card, Laser, Solo
+						,Switch, and China UnionPay)
+			-------- -------------------------
+			7		|	Petroleum
+			-------- -------------------------
+			8		|	Telecommunications
+			-------- -------------------------
+			9		|	National Assignment
+			
+		If the MII is 9, the next three digits of the issuer identifier are the 3-digit country 
+		codes defined in ISO 3166, and the remaining final two digits of the issuer identifier 
+		can be defined by the national standards body of the specified country in whatever way wished.
+		
+		
+		The first few digits can always be used to identify the credit card type
+		
+			Visa: 4xxxxxx
+			Mastercard: 5xxxxx
+			Discover: 6011xx, 644xxx, 65xxxx
+			American Express: 3xxxx, 37xxxx
+			Diner's Club and Carte Blanche: 300xxx-305xxx, 36xxxx, 38xxxx
+			
+			
+		Card length:
+
+			Visa and Visa Electron: 13 or 16
+			Mastercard: 16
+			Discover: 16
+			American Express: 15
+			Diner's Club (including enRoute, International, Blanche): 14
+			Maestro: 12 to 19 (multi-national Debit Card)
+			Laser: 16 to 19 (Ireland Debit Card)
+			Switch: 16, 18 or 19 (United Kingdom Debit Card)
+			Solo: 16, 18 or 19 (United Kingdom Debit Card)
+			JCB: 15 or 16 (Japan Credit Bureau)
+			China UnionPay: 16 (the only domestic bank card organization in the People's Republic of China)
+
+
+		|	Issuer Identification Number (IIN) or Bank Identification Number (BIN)	|
+		-----------------------------------------------------------------------------
+		
+		The first 6 digits of your credit card number (including the initial MII digit) form the Issuer 
+		Identifier Number or IIN. The IIN is also referred to as the Bank Identification Number or BIN. 
+		These digits identify which organization issued the credit card. You can lookup the issuing 
+		organization on the Internet using a BIN Database service ( https://www.bindb.com/bin-database.html ). 
+		In electronic commerce the BIN number can be very useful.
+		
+		*/
+	function identifyCard(){
+		
+		//reset id results
+		document.getElementById("result").innerHTML = '';
+	
+		//numberCard input
+		var numberCard = document.getElementById("numberCard").value;
+		
+		/*
+			Visa:		4xxx 
+			MasterCard:	5xxx
+			Discover:	6011xx, 644xx, 65xxx
+			
+			417760          TC        Visa Signature          
+			540937          TC        MasterCard WebCard      	
+			543696          TC        MasterCard World Class  
+			547551          TC        MasterCard BusinessCard 
+			552252          TC        MasterCard Black        
+			554904          TC        Mastercard Platinum     
+			419189          TC        Visa Platinum           
+			559800          TC        Mastercard Black PB     
+		*/
+		
+		if(numberCard.length == 16){
+			
+			var  visaSignature 			= /^417760/;
+			var  mastercardWebcard		= /^540937/;
+			var  mastercardWorldClass	= /^543696/;
+			var  mastercardBusinessCard = /^547551/;
+			var  mastercardBlack		= /^552252/;
+			var  mastercardPlatinum		= /^554904/;
+			var  visaPlatinum			= /^419189/;
+			var  mastercardBlackPB		= /^559800/;
+			var  discover				= /^6011/;
+			
+			if (visaSignature.test(numberCard)){
+				result("visa Signature");			
+				
+			}else if (mastercardWebcard.test(numberCard)){
+				result("Mastercard WebCard");
+			
+			}else if (mastercardWorldClass.test(numberCard)){
+				result("Mastercard World Class");
+				
+			}else if (mastercardBusinessCard.test(numberCard)){
+				result("Mastercard Business Card") ;
+				
+			}else if (mastercardBlack.test(numberCard)){
+				result("Mastercard Black");
+				
+			}else if (mastercardPlatinum.test(numberCard)){
+				result("Mastercard Platinum");
+				
+			}else if (mastercardBlackPB.test(numberCard)) {
+				result("Mastercard Black PB");
+				
+			}else if (visaPlatinum.test(numberCard)) {
+				result("Visa Platinum");
+				
+			}else if (discover.test(numberCard)){
+				result("Discover");
+			} else {
+				result(":(");
+			}
+			
+			
+		}
+		
+		//American Express: 3xxxx, 37xxxxx
+		if(numberCard.length == 15){
+			result("American Express");
+		
+		}
+		
+		//Diner's Club: 300xxx-305xxx, 36xxxx, 38xxxx
+		if(numberCard.length == 14){
+			result("Diner´s Club");
+		
+		}
+		
+	}
+	
+	function result(cardName){
+		
+		//Show the result
+		document.getElementById("result").innerHTML = cardName;
+	
+	}
+	
+</script>
+
+</body>
+<html>
